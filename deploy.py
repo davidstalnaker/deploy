@@ -4,6 +4,7 @@ from subprocess import call
 from config import Config
 import json
 import re
+import os
 
 app = Flask(__name__)
 config = Config('deploy.conf')
@@ -20,9 +21,17 @@ def reload():
 	return ""
 	
 def pull_and_reload(repo_location, reload_command):
+	stat = os.stat(repo_location)
+	uid = stat.st_uid
+	gid = stat.st_gid
+	os.setegid(gid)
+	os.seteuid(uid)
+	
 	r = Repo(repo_location)
 	try:
 		info = r.remotes.origin.pull()[0]
+		os.seteuid(0)
+		os.setegid(0)
 		if info.flags & info.REJECTED:
 			print('error: merge failed')
 		elif info.flags & info.HEAD_UPTODATE:
@@ -30,8 +39,12 @@ def pull_and_reload(repo_location, reload_command):
 			call(reload_command, shell=True)
 		else:
 			call(reload_command, shell=True)
-	except:
+	except Exception as e:
+		raise(e)
 		print('error: merge failed')
+		
+	
+	
 	
 	
 def urls_are_equal(first, second):
