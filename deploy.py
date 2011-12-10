@@ -1,30 +1,22 @@
 from flask import *
 from git import *
 from subprocess import call
+from config import Config
 import json
 import re
+
 app = Flask(__name__)
+config = Config('deploy.conf')
 
-repos = [
-	{
-		'name': 'pushlink',
-		'location': '/var/www/pushlink',
-		'remote': 'http://github.com/davidstalnaker/pushlink-server',
-		'reload_command': 'service pushlink restart'
-	}
-]
-
-key = 'giuyoa2woe8iuyi6jienlUsplusoeyoa'
-
-@app.route('/%s' % key, methods=['POST'])
+@app.route('/%s' % config.secret_key, methods=['POST'])
 def reload():
 	
 	payload = json.loads(request.form['payload'])
 	url = payload['repository']['url']
 	
-	for repo in repos:
-		if urls_are_equal(url, repo['remote']):
-			pull_and_reload(repo['location'], repo['reload_command'])
+	for repo in config.repos:
+		if urls_are_equal(url, repo.remote):
+			pull_and_reload(repo.location, repo.reload_command)
 	return ""
 	
 def pull_and_reload(repo_location, reload_command):
@@ -49,3 +41,4 @@ def urls_are_equal(first, second):
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=9001, debug=True)
+	
