@@ -1,14 +1,14 @@
 from flask import *
-from git import *
-from subprocess import call
-from config import Config
+from configuration import get_config
+import git
+import subprocess
 import json
 import re
 import os
 import pwd
 
 app = Flask(__name__)
-config = Config('deploy.conf')
+config = get_config('deploy.conf')
 
 @app.route('/%s' % config.secret_key, methods=['POST'])
 def reload():
@@ -20,7 +20,7 @@ def reload():
 		if urls_are_equal(url, repo.remote):
 			success = pull(repo)
 			if success and 'reload_command' in repo:
-				call(repo.reload_command, shell=True)
+				subprocess.call(repo.reload_command, shell=True)
 	return ""
 	
 def pull(repo):
@@ -31,7 +31,7 @@ def pull(repo):
 			uid, gid = ids_for_file(repo.location)
 		become_user(uid, gid)
 		
-		r = Repo(repo.location)
+		r = git.Repo(repo.location)
 		info = r.remotes.origin.pull()[0]
 				
 		if info.flags & info.REJECTED:
