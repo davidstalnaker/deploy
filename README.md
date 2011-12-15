@@ -1,6 +1,6 @@
 # Deploy
 
-A small web server that listens for POSTs from GitHub's [post-receive hooks](http://help.github.com/post-receive-hooks/) and pulls from that repository on the server.
+A small server to automatically pull from GitHub when you push to that repository.  Additionally it can run a command afterwards (generally to restart a server).  It works by running a small web server that listens for POSTs from GitHub's [post-receive hooks](http://help.github.com/post-receive-hooks/).
 
 ## Installation
 
@@ -21,6 +21,8 @@ First, create a file deploy.conf file (or copy example.conf).  The following thi
 	* reload_command - command to be run after pulling the repository
 	* no_su (optional) - if true, will not change uid anywhere
 	* git_user (optional) - specific user to run the git pull as (defaults to the the user who owns the root folder of the repository)
+
+You will also need to add your server to GitHub's post-receive hooks.  To do this, go to Admin -> Service Hooks -> Post-Receive Urls and add <your url>/<secret key>.  This is also where you can test your server once it is running.
 
 ## Running
 
