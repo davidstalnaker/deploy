@@ -11,7 +11,7 @@ For now at least, just install the (python) dependencies and clone the repositor
 
 ## Configuration
 
-First, create a file deploy.conf file (or copy example.conf).  The following things need to be defined:
+First, create a file `deploy.conf` file (or copy example.conf).  The following things need to be defined:
 
 * secret_key - a long random string 
 * repos - a list of dictionaries with options, one for each repository:
@@ -22,7 +22,7 @@ First, create a file deploy.conf file (or copy example.conf).  The following thi
 	* no_su (optional) - if true, will not change uid anywhere
 	* git_user (optional) - specific user to run the git pull as (defaults to the the user who owns the root folder of the repository)
 
-You will also need to add your server to GitHub's post-receive hooks.  To do this, go to Admin -> Service Hooks -> Post-Receive Urls and add <your url>/<secret key>.  This is also where you can test your server once it is running.
+You will also need to add your server to GitHub's post-receive hooks.  To do this, go to Admin -> Service Hooks -> Post-Receive Urls and add `<your url>/<secret key>`.  This is also where you can test your server once it is running.
 
 ## Running
 
